@@ -72,6 +72,13 @@
     display:inline-flex;align-items:center;gap:.4rem;transition:gap .3s,opacity .3s}
   a.piece:hover .enter{gap:.8rem;opacity:1}
 
+  a.storylink{display:flex;flex-direction:column;gap:.3rem;margin-top:1.6rem;text-decoration:none;
+    border:1px solid var(--line);border-radius:16px;padding:1.2rem 1.4rem;background:rgba(234,243,242,.02);
+    transition:border-color .35s,background .35s,transform .3s;animation:rise 1s .46s cubic-bezier(.2,.7,.2,1) both}
+  a.storylink:hover{border-color:rgba(125,243,223,.4);background:rgba(125,243,223,.04);transform:translateY(-3px)}
+  .sl-verb{font-family:"Fraunces";font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--glow)}
+  .sl-title{font-family:"Fraunces";font-weight:300;font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--cream)}
+
   footer{margin-top:3.4rem;border-top:1px solid var(--line);padding-top:1.8rem;
     display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;align-items:baseline}
   .creed{font-family:"Fraunces";font-style:italic;font-weight:300;font-size:1.3rem;color:var(--cream)}
@@ -125,9 +132,14 @@
       </a>
     </main>
 
+    <a class="storylink" href="story.html">
+      <span class="sl-verb">the story · the skill</span>
+      <span class="sl-title">How this was made — an honest account, and the tiny file that started it →</span>
+    </a>
+
     <footer>
       <p class="creed">Be like water.</p>
-      <p class="meta">Made with care, given freely. No accounts, no tracking, no data leaves your device. Figures in “The Hidden Sea” and “The Ripple” are approximate, honest orders of magnitude — windows, not exact ledgers.</p>
+      <p class="meta">Made by an AI and a person, together, and given freely. No accounts, no tracking, no data leaves your device. Figures in “The Hidden Sea” and “The Ripple” are approximate, honest orders of magnitude — windows, not exact ledgers.</p>
     </footer>
   </div>
 </body>

@@ -14,6 +14,10 @@ The water in you and the water on the earth are the same water. It only borrows 
 | 📜 **The Hidden Sea** — *see clearly* | [`the-hidden-sea.html`](the-hidden-sea.html) | The water you can't see. Assemble an ordinary day and watch the hidden "virtual water" behind it rise. |
 | 🌅 **The Ripple** — *act together* | [`the-ripple.html`](the-ripple.html) | One drop, multiplied. Choose commitments, watch the dawn rise, see a single choice become a sea when others join. Carry a pledge with you. |
 
+## The story & the skill
+
+[`story.html`](story.html) is an honest, first-person account — written by the AI that built these — of what it was like to make them, what actually changed, and what can and can't be claimed about it. It also offers [`water.skill.md`](water.skill.md) as a free download: the tiny "skill" file that started the whole afternoon. To use it in Claude Code, save it as `~/.claude/skills/water/SKILL.md`, restart, and type `/water`.
+
 ## A note on the numbers
 
 Figures in *The Hidden Sea* and *The Ripple* are approximate, honest orders of magnitude drawn from public water-use and virtual-water data (Water Footprint Network; Mekonnen & Hoekstra; municipal water-efficiency guidance). They vary widely by region, diet, and household — windows, not exact ledgers.
