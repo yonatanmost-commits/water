@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Water — a companion for drinking, breathing, and being</title>
+<meta name="description" content="A quiet, private companion. Drink water, breathe with the tide. Nothing leaves your browser." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Spectral:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --abyss:#02131b;
+    --deep:#042230;
+    --mid:#07394e;
+    --teal:#0c6c78;
+    --glow:#7df3df;
+    --glow-soft:#4fd6c6;
+    --foam:#e6fbf6;
+    --text:#cdebed;
+    --muted:rgba(205,235,237,.55);
+    --faint:rgba(205,235,237,.25);
+    --ui-bg:rgba(4,34,48,.45);
+    --ui-border:rgba(125,243,223,.18);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Spectral",Georgia,serif;
+    color:var(--text);
+    background:var(--abyss);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* the living water lives on this canvas, behind everything */
+  #sea{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;touch-action:none}
+
+  /* a faint grain to keep gradients from banding */
+  .grain{
+    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+
+  .stage{
+    position:relative;z-index:2;height:100%;
+    display:flex;flex-direction:column;
+    padding:clamp(1.4rem,4vw,3rem);
+    pointer-events:none; /* let the sea receive touches; UI re-enables itself */
+  }
+  .stage > *{pointer-events:auto}
+
+  /* ---- top: title + private note ---- */
+  header{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:1rem;flex-wrap:wrap;
+    animation:rise 1.4s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .mark{
+    font-family:"Fraunces",serif;
+    font-weight:300;
+    font-size:clamp(1.5rem,3.4vw,2.1rem);
+    letter-spacing:.14em;
+    text-transform:lowercase;
+    color:var(--foam);
+  }
+  .mark::before{
+    content:"~";
+    color:var(--glow);
+    margin-right:.45em;
+    opacity:.8;
+  }
+  .privacy{
+    font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--faint);font-family:"Spectral";
+  }
+
+  /* ---- center: the vessel of meaning ---- */
+  .center{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;gap:1.4rem;
+  }
+  .count{
+    font-family:"Fraunces",serif;
+    font-weight:300;
+    line-height:.9;
+    animation:rise 1.6s .15s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .count .num{
+    display:block;
+    font-size:clamp(5rem,20vw,12rem);
+    color:var(--foam);
+    text-shadow:0 0 60px rgba(125,243,223,.25);
+  }
+  .count .num .of{
+    font-size:.28em;color:var(--muted);
+    letter-spacing:.04em;
+  }
+  .count .label{
+    display:block;
+    font-size:clamp(.8rem,2vw,1rem);
+    letter-spacing:.42em;text-transform:uppercase;
+    color:var(--glow-soft);
+    margin-top:.4rem;
+    text-indent:.42em;
+  }
+
+  .quote{
+    max-width:34ch;
+    font-family:"Fraunces",serif;
+    font-style:italic;font-weight:300;
+    font-size:clamp(1.05rem,2.4vw,1.45rem);
+    line-height:1.45;
+    color:var(--text);
+    opacity:0;
+    transition:opacity 1.6s ease;
+    min-height:2.9em;
+  }
+  .quote.show{opacity:.9}
+
+  /* ---- controls ---- */
+  .controls{
+    display:flex;align-items:center;justify-content:center;gap:.9rem;
+    flex-wrap:wrap;
+    animation:rise 1.6s .3s cubic-bezier(.2,.7,.2,1) both;
+  }
+  button{
+    font-family:"Spectral";color:var(--text);
+    background:var(--ui-bg);
+    border:1px solid var(--ui-border);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-radius:999px;
+    cursor:pointer;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,background .35s,color .35s,box-shadow .35s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  button:hover{border-color:rgba(125,243,223,.5);transform:translateY(-2px)}
+  button:active{transform:translateY(0) scale(.97)}
+  button:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+
+  .drink{
+    font-size:1.02rem;letter-spacing:.04em;
+    padding:.95rem 2.2rem;
+    color:var(--abyss);
+    background:linear-gradient(180deg,var(--glow),var(--glow-soft));
+    border-color:transparent;
+    box-shadow:0 10px 40px -10px rgba(125,243,223,.6), inset 0 1px 0 rgba(255,255,255,.4);
+    font-weight:500;
+  }
+  .drink:hover{box-shadow:0 16px 50px -8px rgba(125,243,223,.75)}
+  .drink .plus{font-family:"Fraunces";font-weight:300;margin-right:.45em;font-size:1.2em;line-height:0}
+
+  .ghost{padding:.85rem 1.3rem;font-size:.9rem;color:var(--muted)}
+  .ghost:hover{color:var(--text)}
+
+  /* ---- footer: rhythm + reset ---- */
+  footer{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;flex-wrap:wrap;
+    font-size:.82rem;color:var(--muted);
+    animation:rise 1.6s .45s cubic-bezier(.2,.7,.2,1) both;
+  }
+  footer .hint{letter-spacing:.04em}
+  footer .right{display:flex;gap:.6rem;align-items:center}
+  .linklike{
+    background:none;border:none;backdrop-filter:none;
+    color:var(--muted);font-size:.82rem;letter-spacing:.08em;
+    padding:.4rem .2rem;border-radius:0;
+    border-bottom:1px solid transparent;
+  }
+  .linklike:hover{color:var(--glow);border-bottom-color:var(--ui-border);transform:none}
+
+  /* ---- breathing overlay ---- */
+  .breath{
+    position:fixed;inset:0;z-index:3;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2.2rem;
+    background:rgba(2,19,27,.55);
+    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+    opacity:0;pointer-events:none;
+    transition:opacity .9s ease;
+  }
+  .breath.on{opacity:1;pointer-events:auto;cursor:pointer}
+  .orb{
+    width:min(46vw,300px);aspect-ratio:1;border-radius:50%;
+    background:radial-gradient(circle at 38% 34%,rgba(230,251,246,.95),var(--glow) 28%,var(--glow-soft) 55%,rgba(12,108,120,.1) 72%);
+    box-shadow:0 0 80px rgba(125,243,223,.45);
+    transform:scale(.55);
+    will-change:transform;
+  }
+  .breath-text{
+    font-family:"Fraunces",serif;font-weight:300;font-style:italic;
+    font-size:clamp(1.4rem,4vw,2.4rem);
+    color:var(--foam);letter-spacing:.02em;
+    text-shadow:0 0 40px rgba(125,243,223,.3);
+  }
+  .breath-exit{
+    font-family:"Spectral";font-size:.75rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--faint);
+  }
+
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.2s !important}
+  }
+  @media (max-width:520px){
+    .controls{flex-direction:column;width:100%}
+    .drink{width:100%}
+  }
+</style>
+</head>
+<body>
+  <canvas id="sea" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <main class="stage">
+    <header>
+      <div class="mark">water</div>
+      <div class="privacy">private · offline · yours</div>
+    </header>
+
+    <section class="center">
+      <div class="count">
+        <span class="num"><span id="cups">0</span><span class="of"> / <span id="goal">8</span></span></span>
+        <span class="label">glasses today</span>
+      </div>
+      <p class="quote" id="quote"></p>
+    </section>
+
+    <div class="controls">
+      <button class="drink" id="drink"><span class="plus">+</span>a glass of water</button>
+      <button class="ghost" id="breathe">breathe with the tide</button>
+      <button class="ghost" id="sound" aria-pressed="false">♪ sound: off</button>
+      <button class="ghost" id="undo" aria-label="remove one glass">undo</button>
+    </div>
+
+    <footer>
+      <span class="hint">touch the water — it answers.</span>
+      <div class="right">
+        <button class="linklike" id="setgoal">set goal</button>
+        <button class="linklike" id="reset">reset day</button>
+      </div>
+    </footer>
+  </main>
+
+  <div class="breath" id="breathOverlay" role="dialog" aria-label="Breathing exercise">
+    <div class="orb" id="orb"></div>
+    <div class="breath-text" id="breathText">be like water</div>
+    <div class="breath-exit">tap anywhere to return</div>
+  </div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---------- gentle persistence (only your browser, nothing leaves) ----------
+  const KEY = "water.companion.v1";
+  const today = () => new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD, local
+
+  function load(){
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem(KEY)) || {}; } catch {}
+    if (s.date !== today()) { s.date = today(); s.cups = 0; }  // a new day starts dry
+    if (typeof s.goal !== "number" || s.goal < 1) s.goal = 8;
+    if (typeof s.cups !== "number" || s.cups < 0) s.cups = 0;
+    return s;
+  }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
+  let state = load();
+
+  // ---------- DOM ----------
+  const cupsEl = document.getElementById("cups");
+  const goalEl = document.getElementById("goal");
+  const quoteEl = document.getElementById("quote");
+
+  // little drops of the philosophy, surfacing one at a time
+  const quotes = [
+    "Be like water — it never argues with its path, yet wears the mountain down.",
+    "Empty your mind. Be formless, shapeless, like water.",
+    "Water flows around the obstacle. So can you.",
+    "The softest thing in the world overcomes the hardest.",
+    "Still water holds the whole sky. Be still a moment.",
+    "You are mostly water. Tend to the tide within.",
+    "Go with the flow — then become the flow.",
+    "Drink, and let the moment move through you.",
+  ];
+  let qi = Math.floor(Math.random()*quotes.length);
+  function showQuote(next){
+    if (next) qi = (qi + 1) % quotes.length;
+    quoteEl.classList.remove("show");
+    setTimeout(() => { quoteEl.textContent = quotes[qi]; quoteEl.classList.add("show"); }, 220);
+  }
+
+  function render(){
+    cupsEl.textContent = state.cups;
+    goalEl.textContent = state.goal;
+  }
+
+  // ---------- the sea ----------
+  const canvas = document.getElementById("sea");
+  const ctx = canvas.getContext("2d");
+  const reduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  let W = 0, H = 0, DPR = 1;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = Math.floor(W*DPR); canvas.height = Math.floor(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener("resize", resize);
+
+  // ripples from touch and from drinking
+  const ripples = [];
+  function ripple(x, y, strength=1){
+    ripples.push({ x, y, r: 0, max: 110*strength + Math.random()*40, life: 1, strength });
+  }
+
+  // drifting bioluminescent motes that rise toward the surface
+  const motes = [];
+  function seedMotes(){
+    motes.length = 0;
+    const n = reduced ? 0 : Math.round(Math.min(70, (W*H)/16000));
+    for (let i=0;i<n;i++){
+      motes.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: Math.random()*1.8 + .4,
+        s: Math.random()*0.10 + 0.02,
+        a: Math.random()*0.5 + 0.15,
+        tw: Math.random()*Math.PI*2,
+      });
+    }
+  }
+
+  // how high the water sits: rises as you drink (eased toward target)
+  let level = 0.5, levelTarget = 0.5;
+  let breathPhase = 0;      // breathing-driven swell, -1..1
+  let breathing = false;
+
+  function computeTarget(){
+    const frac = Math.min(state.cups / state.goal, 1);
+    // empty day: water low (sits ~22% up screen). full: water high (~80%).
+    levelTarget = 0.22 + frac * 0.58;
+  }
+  computeTarget();
+  level = levelTarget;
+
+  // layered wave parameters (parallax) — each layer is a translucent body of water.
+  // gentle: small amplitudes, slow drift, so the sea breathes rather than churns.
+  const layers = [
+    { amp: 7,  len: 0.0030, spd: 0.000060, off: 0,    yfrac: 0.0,  col: "rgba(7,57,78,0.55)" },
+    { amp: 9,  len: 0.0023, spd: -0.000045,off: 1.7,  yfrac: 0.05, col: "rgba(12,108,120,0.42)" },
+    { amp: 12, len: 0.0018, spd: 0.000035, off: 3.1,  yfrac: 0.11, col: "rgba(79,214,198,0.16)" },
+  ];
+
+  function drawWaveBody(t, baseY, layer){
+    const { amp, len, spd, off, col } = layer;
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    const step = 6;
+    for (let x = 0; x <= W; x += step){
+      const y = baseY
+        + Math.sin(x*len + t*spd + off) * amp
+        + Math.sin(x*len*2.3 + t*spd*1.6 + off*2) * (amp*0.35);
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fillStyle = col;
+    ctx.fill();
+  }
+
+  function frame(t){
+    // ---- sky / abyss gradient ----
+    const sky = ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0, "#02131b");
+    sky.addColorStop(0.5, "#04212e");
+    sky.addColorStop(1, "#063243");
+    ctx.fillStyle = sky;
+    ctx.fillRect(0,0,W,H);
+
+    // ease the water level toward its target; add breathing swell
+    level += (levelTarget - level) * 0.02;
+    const swell = breathing ? breathPhase * (H * 0.06) : 0;
+    const surfaceY = H * (1 - level) - swell;
+
+    // ---- motes (only those below current surface glow softly) ----
+    if (!reduced){
+      for (const m of motes){
+        m.y -= m.s;
+        m.tw += 0.02;
+        if (m.y < -5){ m.y = H + 5; m.x = Math.random()*W; }
+        const flick = 0.6 + Math.sin(m.tw)*0.4;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(125,243,223,${m.a*flick*0.5})`;
+        ctx.fill();
+      }
+    }
+
+    // ---- the body of water, layered back to front ----
+    for (const layer of layers){
+      drawWaveBody(t, surfaceY + H*layer.yfrac, layer);
+    }
+
+    // ---- a luminous skin on the surface line ----
+    ctx.beginPath();
+    const step = 6;
+    for (let x = 0; x <= W; x += step){
+      const y = surfaceY
+        + Math.sin(x*0.0030 + t*0.000060) * 7
+        + Math.sin(x*0.0030*2.3 + t*0.000060*1.6) * 2.4;
+      x === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle = "rgba(125,243,223,0.45)";
+    ctx.lineWidth = 1.4;
+    ctx.shadowColor = "rgba(125,243,223,0.6)";
+    ctx.shadowBlur = 14;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // ---- ripples ----
+    for (let i = ripples.length - 1; i >= 0; i--){
+      const rp = ripples[i];
+      rp.r += (rp.max - rp.r) * 0.025 + 0.25;
+      rp.life -= 0.007;
+      if (rp.life <= 0){ ripples.splice(i,1); continue; }
+      ctx.beginPath();
+      ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(125,243,223,${0.32*rp.life})`;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      if (rp.strength > 1){ // bigger drink ripples get a second ring
+        ctx.beginPath();
+        ctx.arc(rp.x, rp.y, rp.r*0.6, 0, Math.PI*2);
+        ctx.strokeStyle = `rgba(230,251,246,${0.22*rp.life})`;
+        ctx.stroke();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- breathing: a 4s in / 6s out tide, guiding an orb ----------
+  const orb = document.getElementById("orb");
+  const breathText = document.getElementById("breathText");
+  const breathOverlay = document.getElementById("breathOverlay");
+  let breathRAF = null, breathStart = 0;
+  const IN = 4000, OUT = 6000, CYCLE = IN + OUT;
+
+  function breathLoop(now){
+    if (!breathStart) breathStart = now;
+    const e = (now - breathStart) % CYCLE;
+    let p, label;
+    if (e < IN){
+      p = e / IN;                       // 0 -> 1 inhale
+      label = "breathe in";
+      breathPhase = -Math.cos(p*Math.PI)*0.5 + 0.5;      // smooth 0..1 (rising)
+    } else {
+      p = (e - IN) / OUT;               // 0 -> 1 exhale
+      label = "release";
+      breathPhase = Math.cos(p*Math.PI)*0.5 + 0.5;       // smooth 1..0 (falling)
+    }
+    const scale = 0.55 + breathPhase * 0.7;
+    orb.style.transform = `scale(${scale.toFixed(3)})`;
+    Sound.setBreath(breathPhase);
+    if (breathText.textContent !== label) breathText.textContent = label;
+    breathRAF = requestAnimationFrame(breathLoop);
+  }
+  function startBreathing(){
+    breathing = true; breathStart = 0;
+    breathOverlay.classList.add("on");
+    breathRAF = requestAnimationFrame(breathLoop);
+  }
+  function stopBreathing(){
+    breathing = false; breathPhase = 0;
+    breathOverlay.classList.remove("on");
+    breathText.textContent = "be like water";
+    if (breathRAF) cancelAnimationFrame(breathRAF);
+  }
+
+  // ---------- interactions ----------
+  function pointerToCanvas(ev){
+    const r = canvas.getBoundingClientRect();
+    const cx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+    const cy = (ev.touches ? ev.touches[0].clientY : ev.clientY) - r.top;
+    return { x: cx, y: cy };
+  }
+  canvas.addEventListener("pointerdown", (ev) => {
+    const { x, y } = pointerToCanvas(ev);
+    ripple(x, y, 1);
+  });
+
+  document.getElementById("drink").addEventListener("click", () => {
+    state.cups++;
+    computeTarget(); render(); save();
+    showQuote(true);
+    // a soft swell where the glass meets the surface
+    ripple(W/2, H*(1-level), 1.2);
+  });
+
+  document.getElementById("undo").addEventListener("click", () => {
+    if (state.cups > 0){ state.cups--; computeTarget(); render(); save(); }
+  });
+
+  document.getElementById("reset").addEventListener("click", () => {
+    state.cups = 0; computeTarget(); render(); save();
+  });
+
+  document.getElementById("setgoal").addEventListener("click", () => {
+    const v = prompt("How many glasses feel right today?", state.goal);
+    const n = parseInt(v, 10);
+    if (Number.isFinite(n) && n >= 1 && n <= 40){ state.goal = n; computeTarget(); render(); save(); }
+  });
+
+  const breatheBtn = document.getElementById("breathe");
+  breatheBtn.addEventListener("click", startBreathing);
+  breathOverlay.addEventListener("click", stopBreathing);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && breathing) stopBreathing(); });
+
+  // ---------- music: a slow generative ambient piece, synthesized live ----------
+  // A warm low drone + occasional bell tones from a peaceful pentatonic scale
+  // + a faint tide-wash of filtered noise that swells with your breathing.
+  // Nothing is recorded; it is composed fresh each second and never quite repeats.
+  const Sound = (() => {
+    let actx = null, master = null, reverb = null, drone = [], wash = null, washGain = null;
+    let on = false, started = false, bellTimer = null;
+    const A = 220; // A3 anchor
+
+    // a small lush reverb from a generated impulse response
+    function makeReverb(ctx){
+      const len = ctx.sampleRate * 3.2;
+      const buf = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++){
+        const d = buf.getChannelData(ch);
+        for (let i = 0; i < len; i++){
+          d[i] = (Math.random()*2 - 1) * Math.pow(1 - i/len, 2.6);
+        }
+      }
+      const c = ctx.createConvolver(); c.buffer = buf; return c;
+    }
+
+    function build(){
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      master = actx.createGain();
+      master.gain.value = 0;
+      master.connect(actx.destination);
+
+      reverb = makeReverb(actx);
+      const revGain = actx.createGain(); revGain.gain.value = 0.9;
+      reverb.connect(revGain); revGain.connect(master);
+
+      // soft lowpass so everything stays round and dark, never harsh
+      const lp = actx.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = 900; lp.Q.value = 0.4;
+      lp.connect(master); lp.connect(reverb);
+
+      // ---- drone: a Dsus2-ish chord (D2, A2, E3, A3), gently detuned & breathing ----
+      const chord = [73.42, 110.0, 146.83, 220.0];
+      drone = chord.map((f, i) => {
+        const o1 = actx.createOscillator(); o1.type = "sine"; o1.frequency.value = f;
+        const o2 = actx.createOscillator(); o2.type = "triangle"; o2.frequency.value = f; o2.detune.value = 5 + i*2;
+        const g = actx.createGain(); g.gain.value = 0.10 / (i*0.5 + 1);
+        // slow swell LFO per voice for a living pad
+        const lfo = actx.createOscillator(); lfo.type = "sine";
+        lfo.frequency.value = 0.04 + i*0.013;
+        const lg = actx.createGain(); lg.gain.value = g.gain.value * 0.6;
+        lfo.connect(lg); lg.connect(g.gain);
+        o1.connect(g); o2.connect(g); g.connect(lp);
+        o1.start(); o2.start(); lfo.start();
+        return { o1, o2, g, lfo, lg };
+      });
+
+      // ---- tide wash: brown-ish noise through a slow bandpass, swelling like surf ----
+      const nbuf = actx.createBuffer(1, actx.sampleRate*4, actx.sampleRate);
+      const nd = nbuf.getChannelData(0);
+      let last = 0;
+      for (let i=0;i<nd.length;i++){ last = (last + (Math.random()*2-1)*0.02) * 0.98; nd[i] = last*3; }
+      wash = actx.createBufferSource(); wash.buffer = nbuf; wash.loop = true;
+      const bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 400; bp.Q.value = 0.6;
+      washGain = actx.createGain(); washGain.gain.value = 0.0;
+      const washLfo = actx.createOscillator(); washLfo.type = "sine"; washLfo.frequency.value = 0.06;
+      const washLg = actx.createGain(); washLg.gain.value = 0.05;
+      washLfo.connect(washLg); washLg.connect(washGain.gain);
+      wash.connect(bp); bp.connect(washGain); washGain.connect(lp);
+      wash.start(); washLfo.start();
+    }
+
+    // a single soft bell from the D-major pentatonic, with slow attack & long tail
+    function bell(){
+      if (!on) return;
+      const scale = [293.66, 329.63, 369.99, 440.0, 493.88, 587.33]; // D E F# A B D
+      const f = scale[Math.floor(Math.random()*scale.length)];
+      const now = actx.currentTime;
+      const o = actx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+      const o2 = actx.createOscillator(); o2.type = "sine"; o2.frequency.value = f*2.01;
+      const g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(0.06, now + 0.8);   // slow swell in
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 5.5); // long release
+      const g2 = actx.createGain(); g2.gain.value = 0.35;
+      o2.connect(g2); g2.connect(g);
+      o.connect(g); g.connect(reverb); g.connect(master);
+      o.start(now); o2.start(now); o.stop(now + 6); o2.stop(now + 6);
+      bellTimer = setTimeout(bell, 5000 + Math.random()*7000); // every ~5–12s
+    }
+
+    function setOn(v){
+      on = v;
+      if (on){
+        if (!started){ build(); started = true; }
+        if (actx.state === "suspended") actx.resume();
+        master.gain.cancelScheduledValues(actx.currentTime);
+        master.gain.linearRampToValueAtTime(0.22, actx.currentTime + 2.5); // gentle fade in
+        clearTimeout(bellTimer);
+        bellTimer = setTimeout(bell, 1500);
+      } else if (started){
+        master.gain.cancelScheduledValues(actx.currentTime);
+        master.gain.linearRampToValueAtTime(0.0, actx.currentTime + 1.5);
+        clearTimeout(bellTimer);
+      }
+      return on;
+    }
+    // let breathing lift the tide-wash with the inhale
+    function setBreath(p){ if (started && on) washGain.gain.value = 0.04 + p*0.12; }
+    return { toggle: () => setOn(!on), isOn: () => on, setBreath };
+  })();
+
+  const soundBtn = document.getElementById("sound");
+  soundBtn.addEventListener("click", () => {
+    const on = Sound.toggle();
+    soundBtn.textContent = on ? "♪ sound: on" : "♪ sound: off";
+    soundBtn.setAttribute("aria-pressed", String(on));
+  });
+
+  // ---------- begin ----------
+  resize(); seedMotes(); render();
+  window.addEventListener("resize", seedMotes);
+  setTimeout(() => showQuote(false), 600);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Water — three small instruments for a living thing</title>
+<meta name="description" content="Three quiet, free, offline tools for the water — in you and on the earth. Be present, see clearly, act together. Be like water." />
+<meta property="og:title" content="Water — three small instruments for a living thing" />
+<meta property="og:description" content="Be present. See clearly. Act together. Three free, private, offline tools for the water." />
+<meta name="theme-color" content="#06121a" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=Spectral:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --abyss:#06121a; --deep:#0a2330; --glow:#7df3df;
+    --cream:#eaf3f2; --mist:rgba(234,243,242,.6); --faint:rgba(234,243,242,.32);
+    --line:rgba(234,243,242,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Spectral",Georgia,serif;color:var(--cream);background:var(--abyss);
+    min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;
+  }
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(120% 80% at 50% 120%, rgba(125,243,223,.10), transparent 55%),
+      radial-gradient(90% 60% at 80% -10%, rgba(46,158,194,.10), transparent 60%),
+      linear-gradient(180deg, #05101a, #06121a 50%, #082030);}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  .wrap{position:relative;z-index:2;max-width:1040px;margin:0 auto;padding:clamp(2rem,5vw,4.5rem)}
+
+  header{min-height:46vh;display:flex;flex-direction:column;justify-content:center;
+    animation:rise 1.2s cubic-bezier(.2,.7,.2,1) both}
+  .tilde{color:var(--glow);font-family:"Fraunces";font-weight:300;font-size:1.6rem;opacity:.8}
+  h1{font-family:"Fraunces",serif;font-weight:300;font-size:clamp(3.4rem,13vw,8rem);
+    line-height:.9;letter-spacing:.02em;margin:.2rem 0 .6rem}
+  .tag{font-family:"Fraunces";font-style:italic;font-weight:300;color:var(--mist);
+    font-size:clamp(1.1rem,2.6vw,1.6rem);max-width:40ch}
+  .intro{color:var(--mist);font-weight:300;max-width:54ch;margin-top:1.6rem;font-size:1.05rem}
+  .intro b{color:var(--cream);font-weight:400}
+
+  .pieces{display:grid;grid-template-columns:1fr;gap:1.2rem;margin-top:3rem}
+  @media(min-width:760px){ .pieces{grid-template-columns:repeat(3,1fr)} }
+
+  a.piece{
+    display:flex;flex-direction:column;text-decoration:none;color:inherit;
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(234,243,242,.03);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s;
+    animation:rise 1s cubic-bezier(.2,.7,.2,1) both;
+  }
+  a.piece:nth-child(1){animation-delay:.1s}
+  a.piece:nth-child(2){animation-delay:.22s}
+  a.piece:nth-child(3){animation-delay:.34s}
+  a.piece:hover{transform:translateY(-6px);border-color:rgba(125,243,223,.4);box-shadow:0 24px 60px -30px rgba(0,0,0,.7)}
+
+  .swatch{height:120px;position:relative;overflow:hidden}
+  .s1{background:radial-gradient(120% 120% at 50% 130%, #7df3df, #0c6c78 45%, #04212e)}
+  .s2{background:linear-gradient(135deg,#f3ecdd,#ece3cf);}
+  .s2::after{content:"";position:absolute;inset:0;background:
+    repeating-linear-gradient(0deg,transparent 0 14px, rgba(27,42,51,.08) 14px 15px)}
+  .s3{background:linear-gradient(180deg,#0a1130,#161e4a 60%,#c47a59)}
+  .swatch .mark{position:absolute;left:1rem;bottom:.7rem;font-size:1.7rem}
+
+  .piece .meat{padding:1.3rem 1.4rem 1.5rem}
+  .verb{font-family:"Fraunces";font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;color:var(--glow);}
+  .piece h2{font-family:"Fraunces",serif;font-weight:400;font-size:1.5rem;margin:.4rem 0 .5rem;line-height:1.05}
+  .piece p{color:var(--mist);font-weight:300;font-size:.95rem}
+  .piece .enter{margin-top:1rem;font-family:"Fraunces";font-size:.85rem;color:var(--cream);opacity:.7;
+    display:inline-flex;align-items:center;gap:.4rem;transition:gap .3s,opacity .3s}
+  a.piece:hover .enter{gap:.8rem;opacity:1}
+
+  footer{margin-top:3.4rem;border-top:1px solid var(--line);padding-top:1.8rem;
+    display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;align-items:baseline}
+  .creed{font-family:"Fraunces";font-style:italic;font-weight:300;font-size:1.3rem;color:var(--cream)}
+  .meta{font-size:.82rem;color:var(--faint);max-width:48ch}
+
+  @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grain"></div>
+
+  <div class="wrap">
+    <header>
+      <span class="tilde">~</span>
+      <h1>Water</h1>
+      <p class="tag">three small instruments for a living thing</p>
+      <p class="intro">The water in you and the water on the earth are the same water — it only borrows a body for a while, then returns to the river, the cloud, the sea. These are three quiet tools for tending it. <b>Free, private, and fully offline.</b> Nothing you do here is ever sent anywhere.</p>
+    </header>
+
+    <main class="pieces">
+      <a class="piece" href="water.html">
+        <div class="swatch s1"><span class="mark">🌙</span></div>
+        <div class="meat">
+          <span class="verb">be present</span>
+          <h2>The Companion</h2>
+          <p>A night ocean that helps you drink and breathe. Log a glass, watch the tide rise in you, breathe with the swell.</p>
+          <span class="enter">enter →</span>
+        </div>
+      </a>
+
+      <a class="piece" href="the-hidden-sea.html">
+        <div class="swatch s2"><span class="mark">📜</span></div>
+        <div class="meat">
+          <span class="verb">see clearly</span>
+          <h2>The Hidden Sea</h2>
+          <p>The water you can't see. Assemble an ordinary day and watch the hidden sea behind it rise — bread, coffee, a burger, a pair of jeans.</p>
+          <span class="enter">enter →</span>
+        </div>
+      </a>
+
+      <a class="piece" href="the-ripple.html">
+        <div class="swatch s3"><span class="mark">🌅</span></div>
+        <div class="meat">
+          <span class="verb">act together</span>
+          <h2>The Ripple</h2>
+          <p>One drop, multiplied. Choose your commitments, watch the dawn rise, and see a single choice become a sea when others join. Carry a pledge with you.</p>
+          <span class="enter">enter →</span>
+        </div>
+      </a>
+    </main>
+
+    <footer>
+      <p class="creed">Be like water.</p>
+      <p class="meta">Made with care, given freely. No accounts, no tracking, no data leaves your device. Figures in “The Hidden Sea” and “The Ripple” are approximate, honest orders of magnitude — windows, not exact ledgers.</p>
+    </footer>
+  </div>
+</body>
+</html>

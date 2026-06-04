@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Hidden Sea — a field guide to the water you can't see</title>
+<meta name="description" content="Assemble an ordinary day and watch the hidden water behind it rise. A quiet field guide to the virtual water in everyday things — and gentle ways to spend less of it." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spectral:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f3ecdd;
+    --paper-2:#ece3cf;
+    --ink:#1b2a33;
+    --ink-soft:#3d4f59;
+    --cyan:#1f6f93;
+    --cyan-bright:#2e9ec2;
+    --rust:#b0532a;
+    --rule:rgba(27,42,51,.16);
+    --rule-strong:rgba(27,42,51,.4);
+    --water:#2e9ec2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Spectral",Georgia,serif;
+    color:var(--ink);
+    background-color:var(--paper);
+    /* faint bathymetric contour lines, like an old depth chart */
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 38px, rgba(27,42,51,.025) 38px 39px),
+      radial-gradient(120% 80% at 80% -10%, rgba(46,158,194,.08), transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cg fill='none' stroke='%231b2a33' stroke-opacity='0.05' stroke-width='1'%3E%3Cpath d='M0 60 Q100 30 200 60 T400 60'/%3E%3Cpath d='M0 120 Q100 90 200 120 T400 120'/%3E%3Cpath d='M0 180 Q100 150 200 180 T400 180'/%3E%3Cpath d='M0 240 Q100 210 200 240 T400 240'/%3E%3Cpath d='M0 300 Q100 270 200 300 T400 300'/%3E%3Cpath d='M0 360 Q100 330 200 360 T400 360'/%3E%3C/g%3E%3C/svg%3E");
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(1.6rem,4vw,3.5rem)}
+
+  /* ---------- masthead ---------- */
+  header{
+    border-bottom:3px double var(--rule-strong);
+    padding-bottom:1.4rem;margin-bottom:2.4rem;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .plate{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:"Space Mono",monospace;font-size:.7rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--ink-soft);margin-bottom:1rem;
+  }
+  h1{
+    font-family:"Cormorant Garamond",serif;font-weight:500;
+    font-size:clamp(2.6rem,8vw,5.4rem);line-height:.95;letter-spacing:-.01em;
+  }
+  h1 em{font-style:italic;color:var(--cyan)}
+  .dek{
+    font-style:italic;font-weight:300;color:var(--ink-soft);
+    font-size:clamp(1rem,2.2vw,1.3rem);max-width:54ch;margin-top:.8rem;
+  }
+
+  /* ---------- layout ---------- */
+  .grid{display:grid;grid-template-columns:1fr;gap:2.6rem}
+  @media(min-width:860px){ .grid{grid-template-columns:1.15fr .85fr;gap:3rem;align-items:start} }
+
+  .section-label{
+    font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--rust);
+    display:flex;align-items:center;gap:.8rem;margin:0 0 1rem;
+  }
+  .section-label::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+  /* item rows */
+  .group{margin-bottom:2rem;animation:rise 1s .1s cubic-bezier(.2,.7,.2,1) both}
+  .item{
+    display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:.9rem;
+    padding:.6rem .2rem;border-bottom:1px solid var(--rule);
+    cursor:pointer;transition:background .25s,padding-left .25s;
+  }
+  .item:hover{background:rgba(46,158,194,.06);padding-left:.5rem}
+  .item .glyph{font-size:1.3rem;width:1.6rem;text-align:center;filter:saturate(.7)}
+  .item .name{font-size:1.02rem}
+  .item .name small{display:block;font-size:.74rem;color:var(--ink-soft);font-style:italic}
+  .item .litres{
+    font-family:"Space Mono",monospace;font-size:.82rem;color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .stepper{display:flex;align-items:center;gap:.5rem}
+  .stepper button{
+    font-family:"Space Mono",monospace;width:1.7rem;height:1.7rem;line-height:1;
+    border:1px solid var(--rule-strong);background:transparent;color:var(--ink);
+    border-radius:50%;cursor:pointer;font-size:.9rem;
+    transition:background .2s,color .2s,border-color .2s;
+  }
+  .stepper button:hover{background:var(--ink);color:var(--paper)}
+  .stepper .count{
+    font-family:"Space Mono",monospace;font-size:.95rem;min-width:1.3ch;text-align:center;
+    color:var(--cyan);font-weight:700;
+  }
+  .item[data-on="0"] .stepper .count{color:var(--rule-strong);font-weight:400}
+
+  /* ---------- the reservoir (sticky on desktop) ---------- */
+  .panel{position:relative}
+  @media(min-width:860px){ .panel{position:sticky;top:2rem} }
+
+  .gauge{
+    border:1px solid var(--rule-strong);background:var(--paper-2);
+    padding:1.6rem;position:relative;overflow:hidden;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset;
+    animation:rise 1.1s .2s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .gauge::before{ /* corner tick marks, like an instrument */
+    content:"";position:absolute;inset:6px;border:1px solid var(--rule);
+    pointer-events:none;
+  }
+
+  .vessel{
+    position:relative;height:230px;border:1.5px solid var(--ink);
+    border-radius:4px 4px 10px 10px;overflow:hidden;background:rgba(255,255,255,.25);
+    margin-bottom:1.4rem;
+  }
+  .vessel .ticks{position:absolute;inset:0;z-index:3;pointer-events:none}
+  .vessel .ticks span{
+    position:absolute;left:0;right:0;border-top:1px solid var(--rule);
+    font-family:"Space Mono",monospace;font-size:.6rem;color:var(--ink-soft);
+    padding-left:6px;
+  }
+  .water{
+    position:absolute;left:0;right:0;bottom:0;height:0%;
+    background:linear-gradient(180deg, var(--cyan-bright), var(--cyan) 60%, #155a78);
+    transition:height 1.1s cubic-bezier(.3,.8,.3,1);
+    z-index:2;
+  }
+  .water::before,.water::after{ /* two gentle wave crests */
+    content:"";position:absolute;top:-14px;left:-50%;width:200%;height:18px;
+    background:radial-gradient(circle at 12px -4px, var(--cyan-bright) 12px, transparent 13px) repeat-x;
+    background-size:24px 18px;opacity:.9;
+    animation:drift 14s linear infinite;
+  }
+  .water::after{top:-9px;background-size:34px 14px;opacity:.5;animation-duration:22s;animation-direction:reverse}
+  @keyframes drift{from{transform:translateX(0)}to{transform:translateX(24px)}}
+
+  .total{
+    font-family:"Space Mono",monospace;font-weight:700;
+    font-size:clamp(2.2rem,7vw,3.2rem);line-height:1;color:var(--ink);
+  }
+  .total .unit{font-size:.4em;color:var(--ink-soft);font-weight:400;letter-spacing:.1em}
+  .total-cap{font-family:"Space Mono",monospace;font-size:.68rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--rust);margin-bottom:.3rem}
+  .conv{margin-top:1rem;font-style:italic;color:var(--ink-soft);min-height:3.2em;font-size:1.02rem}
+  .conv b{font-style:normal;color:var(--ink);font-weight:500}
+
+  /* seen vs unseen split */
+  .split{margin-top:1.5rem}
+  .split .bar{height:14px;display:flex;border:1px solid var(--ink);overflow:hidden;background:var(--paper)}
+  .split .seen{background:repeating-linear-gradient(45deg,var(--ink),var(--ink) 2px,transparent 2px,transparent 5px);transition:width .9s}
+  .split .unseen{background:var(--cyan);transition:width .9s}
+  .split .legend{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;
+    font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);margin-top:.5rem}
+  .split .legend b{color:var(--ink)}
+
+  .empty-note{font-style:italic;color:var(--ink-soft);font-size:.95rem;margin-top:1rem;opacity:.8}
+
+  /* ---------- swaps ---------- */
+  .swaps{margin-top:3.4rem;border-top:3px double var(--rule-strong);padding-top:2.2rem}
+  .swap-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+  @media(min-width:680px){ .swap-grid{grid-template-columns:repeat(2,1fr)} }
+  .swap{background:var(--paper);padding:1.4rem 1.5rem;transition:background .3s}
+  .swap:hover{background:var(--paper-2)}
+  .swap h3{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:1.5rem;line-height:1.1;margin-bottom:.4rem}
+  .swap p{font-size:.95rem;color:var(--ink-soft);margin-bottom:.8rem}
+  .swap .save{font-family:"Space Mono",monospace;font-size:.95rem;color:var(--cyan);font-weight:700}
+  .swap .save small{color:var(--ink-soft);font-weight:400;letter-spacing:.04em}
+
+  /* ---------- colophon ---------- */
+  footer{
+    margin-top:3.4rem;border-top:1px solid var(--rule);padding-top:1.6rem;
+    font-size:.86rem;color:var(--ink-soft);
+  }
+  footer .creed{
+    font-family:"Cormorant Garamond",serif;font-style:italic;font-size:1.35rem;
+    color:var(--ink);max-width:46ch;margin-bottom:1rem;line-height:1.3;
+  }
+  footer .src{font-family:"Space Mono",monospace;font-size:.68rem;letter-spacing:.04em;line-height:1.7}
+  footer a{color:var(--cyan)}
+
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms!important;transition-duration:.2s!important}
+    .water::before,.water::after{animation:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="plate">
+      <span>Plate No. 7 · Virtual Hydrology</span>
+      <span id="datestamp"></span>
+    </div>
+    <h1>The Hidden <em>Sea</em></h1>
+    <p class="dek">Most of the water we spend, we never see. It hides inside the things we eat, wear, and pour. Assemble an ordinary day below — and watch the water behind it rise.</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- LEFT: assemble the day -->
+    <div>
+      <div class="group">
+        <div class="section-label">Water you see · straight from the tap</div>
+        <div id="seenList"></div>
+      </div>
+      <div class="group">
+        <div class="section-label">Water you don't · hidden inside things</div>
+        <div id="unseenList"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: the reservoir -->
+    <div class="panel">
+      <div class="gauge">
+        <div class="total-cap">today's footprint</div>
+        <div class="total"><span id="totalNum">0</span> <span class="unit">litres of fresh water</span></div>
+
+        <div class="vessel" aria-hidden="true" style="margin-top:1.2rem">
+          <div class="ticks" id="ticks"></div>
+          <div class="water" id="water"></div>
+        </div>
+
+        <p class="conv" id="conv"></p>
+
+        <div class="split" id="split" hidden>
+          <div class="bar"><div class="seen" id="seenBar"></div><div class="unseen" id="unseenBar"></div></div>
+          <div class="legend">
+            <span>seen <b id="seenPct">0%</b></span>
+            <span><b id="unseenPct">0%</b> hidden</span>
+          </div>
+        </div>
+
+        <p class="empty-note" id="emptyNote">Tap an item to begin. Notice how the smallest plate can outweigh the longest, most careful shower.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWAPS -->
+  <section class="swaps">
+    <div class="section-label">Lighten the footprint · small currents, real change</div>
+    <div class="swap-grid" id="swapGrid"></div>
+  </section>
+
+  <footer>
+    <p class="creed">To care for water, you first have to see it. This is not a ledger of guilt — it is a window. Look, then choose lightly.</p>
+    <p class="src">
+      Figures are approximate global averages for <em>virtual water</em> (the total freshwater used to produce a thing), drawn from the Water Footprint Network and the work of Mekonnen &amp; Hoekstra. Real footprints vary widely by region, season, and method — treat these as orders of magnitude, not exact accounts. Built to run entirely offline; nothing you tap leaves this page.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // litres of freshwater per item — approximate global averages (virtual + direct)
+  const SEEN = [
+    { id:"tap",    glyph:"🚰", name:"A glass of tap water", note:"the water itself — almost all of it",   l:0.3 },
+    { id:"flush",  glyph:"🚽", name:"A toilet flush",        note:"modern cistern",                         l:6 },
+    { id:"teeth",  glyph:"🪥", name:"Brushing with tap running", note:"~2 minutes",                         l:12 },
+    { id:"shower", glyph:"🚿", name:"A 5-minute shower",     note:"standard head, ~10 L/min",               l:50 },
+    { id:"bath",   glyph:"🛁", name:"A full bath",           note:"",                                       l:150 },
+    { id:"leak",   glyph:"💧", name:"A dripping tap, all day", note:"one drip per second",                  l:60 },
+  ];
+  const UNSEEN = [
+    { id:"bread",  glyph:"🍞", name:"A slice of bread",       note:"",                                      l:48 },
+    { id:"apple",  glyph:"🍎", name:"An apple",               note:"",                                      l:125 },
+    { id:"coffee", glyph:"☕", name:"A cup of coffee",        note:"from bean to cup",                       l:140 },
+    { id:"egg",    glyph:"🥚", name:"One egg",                note:"",                                      l:196 },
+    { id:"milk",   glyph:"🥛", name:"A glass of milk",        note:"250 ml",                                 l:255 },
+    { id:"almond", glyph:"🌰", name:"A handful of almonds",   note:"~30 g · famously thirsty",               l:480 },
+    { id:"choc",   glyph:"🍫", name:"A bar of chocolate",     note:"50 g",                                   l:850 },
+    { id:"burger", glyph:"🍔", name:"A beef burger",          note:"150 g patty",                            l:2400 },
+    { id:"tee",    glyph:"👕", name:"A new cotton t-shirt",   note:"makes one",                              l:2700 },
+    { id:"jeans",  glyph:"👖", name:"A new pair of jeans",    note:"makes one · cotton is thirsty",          l:8000 },
+  ];
+
+  const SWAPS = [
+    { t:"Trade one beef meal for beans", d:"Lentils or beans carry a fraction of beef's hidden water. Just one swap a week ripples outward.", save:2200, per:"saved per meal" },
+    { t:"Shorten the shower by 4 minutes", d:"A small daily current. Over a year it becomes a small lake.", save:14600, per:"saved per year" },
+    { t:"Mend the dripping tap", d:"A single slow drip is a quiet, constant leak straight out of the river.", save:20000, per:"saved per year" },
+    { t:"Wear the shirt you already own", d:"The thirstiest moment of a garment is the day it's made. The kindest one is wearing it longer.", save:2700, per:"saved per shirt" },
+  ];
+
+  const counts = {};
+  const byId = {};
+  [...SEEN, ...UNSEEN].forEach(i => { counts[i.id]=0; byId[i.id]=i; });
+
+  const fmt = n => Math.round(n).toLocaleString("en-US");
+
+  // ---- build item rows ----
+  function row(item){
+    const el = document.createElement("div");
+    el.className = "item"; el.dataset.on = "0"; el.dataset.id = item.id;
+    el.innerHTML =
+      `<span class="glyph">${item.glyph}</span>
+       <span class="name">${item.name}${item.note ? `<small>${item.note}</small>`:""}</span>
+       <span class="litres">${item.l < 1 ? item.l : fmt(item.l)} L</span>
+       <span class="stepper">
+         <button class="minus" aria-label="remove one">−</button>
+         <span class="count">0</span>
+         <button class="plus" aria-label="add one">+</button>
+       </span>`;
+    const set = n => {
+      counts[item.id] = Math.max(0, n);
+      el.querySelector(".count").textContent = counts[item.id];
+      el.dataset.on = counts[item.id] > 0 ? "1" : "0";
+      update();
+    };
+    el.addEventListener("click", e => { if(!e.target.closest("button")) set(counts[item.id]+1); });
+    el.querySelector(".plus").addEventListener("click", () => set(counts[item.id]+1));
+    el.querySelector(".minus").addEventListener("click", () => set(counts[item.id]-1));
+    return el;
+  }
+  const seenList = document.getElementById("seenList");
+  const unseenList = document.getElementById("unseenList");
+  SEEN.forEach(i => seenList.appendChild(row(i)));
+  UNSEEN.forEach(i => unseenList.appendChild(row(i)));
+
+  // ---- vessel ticks (log-ish reference marks) ----
+  const CAP = 4000; // litres at which the vessel reads "full"
+  const ticksEl = document.getElementById("ticks");
+  [ [3000,"3,000 L"], [2000,"2,000 L"], [1000,"1,000 L"], [250,"250 L"] ].forEach(([v,label])=>{
+    const s = document.createElement("span");
+    s.style.bottom = Math.min(100, v/CAP*100) + "%";
+    s.textContent = label;
+    ticksEl.appendChild(s);
+  });
+
+  // ---- relatable conversions ----
+  function conversion(total){
+    if (total <= 0) return "";
+    const baths = total/150;
+    const drinkDays = total/3;       // a person needs ~3 L/day to drink
+    if (total < 50)  return `That's about <b>${(total).toFixed(0)} litres</b> — roughly what you'd drink in <b>${(drinkDays).toFixed(0)} days</b>.`;
+    if (total < 600) return `Enough drinking water for one person for <b>${fmt(drinkDays)} days</b>.`;
+    if (baths < 20)  return `That would fill about <b>${baths.toFixed(1)} bathtubs</b> — or quench one person for <b>${fmt(drinkDays)} days</b>.`;
+    return `About <b>${fmt(baths)} bathtubs</b> of fresh water — a whole <b>${(drinkDays/365).toFixed(1)} years</b> of one person's drinking water.`;
+  }
+
+  // ---- recompute everything ----
+  const totalNum = document.getElementById("totalNum");
+  const water = document.getElementById("water");
+  const conv = document.getElementById("conv");
+  const emptyNote = document.getElementById("emptyNote");
+  const split = document.getElementById("split");
+  const seenBar = document.getElementById("seenBar");
+  const unseenBar = document.getElementById("unseenBar");
+  const seenPct = document.getElementById("seenPct");
+  const unseenPct = document.getElementById("unseenPct");
+
+  function update(){
+    let seenSum=0, unseenSum=0;
+    SEEN.forEach(i => seenSum += counts[i.id]*i.l);
+    UNSEEN.forEach(i => unseenSum += counts[i.id]*i.l);
+    const total = seenSum + unseenSum;
+
+    totalNum.textContent = fmt(total);
+    water.style.height = Math.min(100, total/CAP*100) + "%";
+    conv.innerHTML = conversion(total);
+
+    if (total > 0){
+      emptyNote.hidden = true; split.hidden = false;
+      const sp = Math.round(seenSum/total*100);
+      seenBar.style.width = sp + "%";
+      unseenBar.style.width = (100-sp) + "%";
+      seenPct.textContent = sp + "%";
+      unseenPct.textContent = (100-sp) + "%";
+    } else {
+      emptyNote.hidden = false; split.hidden = true;
+      seenBar.style.width = unseenBar.style.width = "0%";
+    }
+  }
+
+  // ---- swaps ----
+  const swapGrid = document.getElementById("swapGrid");
+  SWAPS.forEach(s => {
+    const el = document.createElement("div");
+    el.className = "swap";
+    el.innerHTML = `<h3>${s.t}</h3><p>${s.d}</p><div class="save">≈ ${fmt(s.save)} L <small>${s.per}</small></div>`;
+    swapGrid.appendChild(el);
+  });
+
+  // ---- datestamp ----
+  document.getElementById("datestamp").textContent =
+    new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+
+  update();
+})();
+</script>
+</body>
+</html>
