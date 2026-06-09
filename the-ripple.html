@@ -194,6 +194,17 @@
     .pledge .ll,.pledge .sumline b,.pledge li::before{color:#111}
     .creed{color:#111}
   }
+
+  /* ---- back to the hub ---- */
+  .tohub{
+    display:inline-flex;align-items:center;gap:.45rem;
+    text-decoration:none;white-space:nowrap;
+    font-family:"Bricolage Grotesque",sans-serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--mist);margin-bottom:1.4rem;
+    transition:color .4s ease,gap .3s ease;
+  }
+  .tohub:hover{color:var(--gold);gap:.7rem}
+  .tohub .arr{font-size:1.05em;line-height:1}
 </style>
 </head>
 <body>
@@ -202,6 +213,8 @@
   <div class="horizon-mist"></div>
 
   <div class="wrap">
+
+    <a class="tohub" href="index.html" title="back to all three instruments"><span class="arr" aria-hidden="true">←</span> all three</a>
 
     <!-- HERO -->
     <div class="hero">

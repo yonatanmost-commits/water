@@ -1,7 +1,11 @@
 // Water — service worker. Lets the companion install as an app and run fully offline.
-const CACHE = 'water-v1';
+const CACHE = 'water-v2';
 const CORE = [
+  './index.html',
   './water.html',
+  './the-hidden-sea.html',
+  './the-ripple.html',
+  './story.html',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
@@ -27,16 +31,17 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
 
-  // Page loads: try the network first (fresh), fall back to the cached app when offline.
+  // Page loads: try the network first (fresh), fall back to the cached page —
+  // the exact one if we have it, otherwise the hub — when offline.
   if (req.mode === 'navigate') {
     e.respondWith(
       fetch(req)
         .then((res) => {
           const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put('./water.html', copy));
+          caches.open(CACHE).then((c) => c.put(req, copy));
           return res;
         })
-        .catch(() => caches.match('./water.html'))
+        .catch(() => caches.match(req).then((hit) => hit || caches.match('./index.html')))
     );
     return;
   }

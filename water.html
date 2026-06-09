@@ -184,6 +184,17 @@
   }
   .linklike:hover{color:var(--glow);border-bottom-color:var(--ui-border);transform:none}
 
+  /* ---- back to the hub ---- */
+  .tohub{
+    display:inline-flex;align-items:center;gap:.45rem;align-self:flex-start;
+    text-decoration:none;white-space:nowrap;
+    font-family:"Spectral",serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:1.1rem;
+    transition:color .4s ease,gap .3s ease;
+  }
+  .tohub:hover{color:var(--glow);gap:.7rem}
+  .tohub .arr{font-size:1.05em;line-height:1}
+
   /* ---- soft install suggestion ---- */
   .install{
     position:fixed;left:50%;bottom:max(1.1rem,env(safe-area-inset-bottom));
@@ -254,6 +265,7 @@
   <div class="grain" aria-hidden="true"></div>
 
   <main class="stage">
+    <a class="tohub" href="index.html" title="back to all three instruments"><span class="arr" aria-hidden="true">←</span> all three</a>
     <header>
       <div class="mark">water</div>
       <div class="privacy">private · offline · yours</div>

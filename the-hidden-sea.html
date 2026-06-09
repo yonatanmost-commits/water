@@ -189,10 +189,23 @@
     *{animation-duration:.01ms!important;transition-duration:.2s!important}
     .water::before,.water::after{animation:none}
   }
+
+  /* ---- back to the hub ---- */
+  .tohub{
+    display:inline-flex;align-items:center;gap:.45rem;
+    text-decoration:none;white-space:nowrap;
+    font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:rgba(27,42,51,.55);margin-bottom:1.4rem;
+    transition:color .4s ease,gap .3s ease;
+  }
+  .tohub:hover{color:var(--cyan);gap:.7rem}
+  .tohub .arr{font-size:1.05em;line-height:1}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <a class="tohub" href="index.html" title="back to all three instruments"><span class="arr" aria-hidden="true">←</span> all three</a>
 
   <header>
     <div class="plate">
