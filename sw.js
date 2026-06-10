@@ -1,12 +1,14 @@
 // Water — service worker. Lets the companion install as an app and run fully offline.
-const CACHE = 'water-v2';
+const CACHE = 'water-v3';
 const CORE = [
   './index.html',
   './water.html',
   './the-hidden-sea.html',
   './the-ripple.html',
   './story.html',
+  './app.js',
   './manifest.webmanifest',
+  './Drop.svg',
   './icon-192.png',
   './icon-512.png',
   './icon-maskable-512.png',
